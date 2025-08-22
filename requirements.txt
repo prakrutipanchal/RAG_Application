@@ -1,0 +1,10 @@
+flask
+pandas
+python-dotenv
+langchain-google-genai==2.1.5
+google-ai-generativelanguage==0.6.18
+langchain-community
+pypdf
+chromadb
+matplotlib
+seaborn > requirements.txt

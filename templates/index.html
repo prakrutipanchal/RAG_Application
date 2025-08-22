@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Chat with PDFs or CSV</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container index-container">
+    <h1>Select Chat Mode</h1>
+    {% if error %}
+    <p class="error-message">{{ error }}</p>
+    {% endif %}
+    <form method="POST" enctype="multipart/form-data" class="mode-form">
+        <div class="radio-group">
+            <label class="radio-label"><input type="radio" name="chat_mode" value="pdf" {% if chat_mode=='pdf' %}checked{% endif %}/> Chat with PDFs</label><br/>
+            <label class="radio-label"><input type="radio" name="chat_mode" value="csv" {% if chat_mode=='csv' %}checked{% endif %}/> Chat with CSV</label><br/><br/>
+        </div>
+
+        <div id="pdf_upload" class="upload-section" style="display: none;">
+            <label>Select one or more PDFs:</label><br/>
+            <input type="file" name="pdf_files" multiple accept=".pdf"/>
+        </div>
+
+        <div id="csv_upload" class="upload-section" style="display: none;">
+            <label>Select one CSV file:</label><br/>
+            <input type="file" name="csv_file" accept=".csv"/>
+        </div>
+
+        <br/>
+        <button type="submit" class="submit-btn">Start Chatting</button>
+    </form>
+
+    <script>
+        function toggleUploadFields() {
+            const pdfRadio = document.querySelector('input[name="chat_mode"][value="pdf"]');
+            const csvRadio = document.querySelector('input[name="chat_mode"][value="csv"]');
+            const pdfUpload = document.getElementById('pdf_upload');
+            const csvUpload = document.getElementById('csv_upload');
+            if (pdfRadio.checked) {
+                pdfUpload.style.display = 'block';
+                csvUpload.style.display = 'none';
+            } else if (csvRadio.checked) {
+                pdfUpload.style.display = 'none';
+                csvUpload.style.display = 'block';
+            }
+        }
+
+        document.querySelectorAll('input[name="chat_mode"]').forEach(radio => {
+            radio.addEventListener('change', toggleUploadFields);
+        });
+
+        // Call once on load
+        window.onload = toggleUploadFields;
+    </script>
+  </div>
+</body>
+</html>

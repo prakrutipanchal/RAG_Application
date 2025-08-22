@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Chat - {{ mode|upper }}</title>
+</head>
+<body>
+  <div class="container">
+    <div class="chat-header">
+      <h1>Chat with {{ mode|upper }}</h1>
+      <a href="/" class="new-chat-btn">New Chat</a>
+    </div>
+    
+    <div class="chat-container" id="chatContainer">
+      {% for message in chat_history %}
+        {% if message.role == 'user' %}
+          <div class="message user-message">
+            <div class="message-content">
+              <p>{{ message.content }}</p>
+            </div>
+          </div>
+        {% else %}
+          <div class="message bot-message">
+            <div class="message-content">
+              <p>{{ message.content }}</p>
+              {% if message.visualization %}
+                <div class="visualization">
+                  <img src="{{ url_for('get_visualization', visualization_id=message.visualization) }}" 
+                       alt="Data Visualization" class="viz-image">
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <form method="POST" id="chatForm" class="chat-form">
+      <div class="input-container">
+        <input id="chatInput" class="chat-input" type="text" name="query" placeholder="Enter your question" required autocomplete="off" />
+        <button id="sendButton" class="chat-button" type="submit">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Scroll to bottom of chat container
+    function scrollToBottom() {
+      const container = document.getElementById('chatContainer');
+      container.scrollTop = container.scrollHeight;
+    }
+    
+    // Scroll to bottom when page loads
+    window.onload = function() {
+      scrollToBottom();
+    };
+    
+    // Handle form submission with validation
+    document.getElementById('chatForm').addEventListener('submit', function(e) {
+      const input = document.getElementById('chatInput');
+      const query = input.value.trim();
+      
+      // Prevent form submission if query is empty
+      if (!query) {
+        e.preventDefault();
+        input.focus();
+        return false;
+      }
+      
+      // Disable button during submission to prevent multiple submissions
+      document.getElementById('sendButton').disabled = true;
+      document.getElementById('sendButton').innerHTML = 'Sending...';
+      
+      // Allow the form to submit normally
+      return true;
+    });
+  </script>
+</body>
+</html>
