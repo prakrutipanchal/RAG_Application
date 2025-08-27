@@ -23,6 +23,7 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # For session management
+api_key = os.getenv("API_KEY")
 
 # Create a temporary directory for visualizations
 VISUALIZATION_DIR = tempfile.mkdtemp(prefix='csv_visualizations_')
@@ -36,7 +37,7 @@ def assign_user_id():
         session['chat_history'] = []
 
 # Initialize LLM and embeddings globally (reuse)
-llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.3)
+llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.3, api_key=api_key)
 embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 
 # Store vector_store or dataframe and mode in session variables like keys 'vector_store' and 'df_csv' won't work (not JSON serializable)
