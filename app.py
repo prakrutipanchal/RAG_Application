@@ -20,6 +20,10 @@ import tempfile
 import shutil
 
 load_dotenv()
+# Get the API key from the environment variable
+api_key = os.getenv("GEMINI_API_KEY")
+if not api_key:
+    raise ValueError("GEMINI_API_KEY not found in environment variables. Please check your .env file.")
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # For session management
@@ -36,8 +40,12 @@ def assign_user_id():
         session['chat_history'] = []
 
 # Initialize LLM and embeddings globally (reuse)
-llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.3)
-embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+# llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.3)
+# embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+
+# Initialize LLM and embeddings with the API key
+llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.3, google_api_key=api_key)
+embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=api_key)
 
 # Store vector_store or dataframe and mode in session variables like keys 'vector_store' and 'df_csv' won't work (not JSON serializable)
 # So we keep them as global vars keyed by session ID for simplicity in this demo
